@@ -38,9 +38,11 @@ class InteractiveRecord
 
   #reuses the .column_names method  when called on an instance of Student for insert!
   #removes id column because we don't need it for insert
+  #join puts the column names into comma separated list, contained in a string for SQL insert
   def col_names_for_insert
     self.class.column_names.delete_if {|col| col == "id"}.join(", ")
   end
+
 
   #formats the column names to be used in a SQL statement
   #pushes the return value of invoking a method via the #send method, unless that value is nil
@@ -50,8 +52,29 @@ class InteractiveRecord
     self.class.column_names.each do |col_name|
       values << "'#{send(col_name)}'" unless send(col_name).nil? #send must act on the values
     end
-    values.join(", ")
+    values.join(", ")#()"'Sam'", "'11'")
   end
 
+  #saves the student to the db
+  #sets the students id
+  def save
+    sql = "INSERT INTO #{table_name_for_insert} (#{col_names_for_insert}) VALUES (#{values_for_insert})"
+    DB[:conn].execute(sql)
+    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM #{table_name_for_insert}")[0][0]
+  end
+
+#finds a row by name - table is abstracted so string interpolation is ok
+  def self.find_by_name(name)
+    sql = "SELECT * FROM #{self.table_name} WHERE name = '#{name}'" #must include ''
+    DB[:conn].execute(sql)
+  end
+
+#find a row by the attribute hash passed into the method
+  def self.find_by(attribute_hash)
+    value = attribute_hash.values.first #Susan
+    key = attribute_hash.keys.first.to_s #name
+    sql = "SELECT * FROM #{self.table_name} WHERE #{key} = '#{value}'"
+    DB[:conn].execute(sql)
+  end
 
 end
