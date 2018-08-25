@@ -69,6 +69,7 @@ class InteractiveRecord
     DB[:conn].execute(sql)
   end
 
+#find a row by the attribute hash passed into the method
   def self.find_by(attribute_hash)
     value = attribute_hash.values.first
     key = attribute_hash.keys.first.to_s
