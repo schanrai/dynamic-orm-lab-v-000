@@ -72,7 +72,7 @@ class InteractiveRecord
   def self.find_by(attribute_hash)
     value = attribute_hash.values.first
     key = attribute_hash.keys.first.to_s
-    sql = "SELECT * FROM #{self.table_name} WHERE #{key} = #{value}"
+    sql = "SELECT * FROM #{self.table_name} WHERE #{key} = ''#{value}''"
     binding.pry
     DB[:conn].execute(sql)
   end
