@@ -65,7 +65,7 @@ class InteractiveRecord
 
 #finds a row by name - table is abstracted so string interpolation is ok
   def self.find_by_name(name)
-    sql = "SELECT * FROM #{self.table_name} WHERE name = '#{name}'"
+    sql = "SELECT * FROM #{self.table_name} WHERE name = '#{name}'" #must include ''
     DB[:conn].execute(sql)
   end
 
